@@ -14,6 +14,9 @@
 		B066D02C1C7F033800C69285 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B066D02B1C7F033800C69285 /* Assets.xcassets */; };
 		B066D02F1C7F033800C69285 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B066D02D1C7F033800C69285 /* LaunchScreen.storyboard */; };
 		B066D03A1C7F033800C69285 /* QLLabelDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B066D0391C7F033800C69285 /* QLLabelDemoTests.m */; };
+		B066D0471C7F038300C69285 /* QLAttributeItem.m in Sources */ = {isa = PBXBuildFile; fileRef = B066D0461C7F038300C69285 /* QLAttributeItem.m */; };
+		B066D04A1C7F03A700C69285 /* QLLabelConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = B066D0491C7F03A700C69285 /* QLLabelConfig.m */; };
+		B066D04D1C7F03C700C69285 /* QLLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = B066D04C1C7F03C700C69285 /* QLLabel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +43,12 @@
 		B066D0351C7F033800C69285 /* QLLabelDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QLLabelDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B066D0391C7F033800C69285 /* QLLabelDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QLLabelDemoTests.m; sourceTree = "<group>"; };
 		B066D03B1C7F033800C69285 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B066D0451C7F038300C69285 /* QLAttributeItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QLAttributeItem.h; sourceTree = "<group>"; };
+		B066D0461C7F038300C69285 /* QLAttributeItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QLAttributeItem.m; sourceTree = "<group>"; };
+		B066D0481C7F03A700C69285 /* QLLabelConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QLLabelConfig.h; sourceTree = "<group>"; };
+		B066D0491C7F03A700C69285 /* QLLabelConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QLLabelConfig.m; sourceTree = "<group>"; };
+		B066D04B1C7F03C700C69285 /* QLLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QLLabel.h; sourceTree = "<group>"; };
+		B066D04C1C7F03C700C69285 /* QLLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QLLabel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +90,7 @@
 		B066D01E1C7F033800C69285 /* QLLabelDemo */ = {
 			isa = PBXGroup;
 			children = (
+				B066D0441C7F035E00C69285 /* QLLabel */,
 				B066D0221C7F033800C69285 /* AppDelegate.h */,
 				B066D0231C7F033800C69285 /* AppDelegate.m */,
 				B066D0251C7F033800C69285 /* ViewController.h */,
@@ -109,6 +119,19 @@
 				B066D03B1C7F033800C69285 /* Info.plist */,
 			);
 			path = QLLabelDemoTests;
+			sourceTree = "<group>";
+		};
+		B066D0441C7F035E00C69285 /* QLLabel */ = {
+			isa = PBXGroup;
+			children = (
+				B066D0451C7F038300C69285 /* QLAttributeItem.h */,
+				B066D0461C7F038300C69285 /* QLAttributeItem.m */,
+				B066D0481C7F03A700C69285 /* QLLabelConfig.h */,
+				B066D0491C7F03A700C69285 /* QLLabelConfig.m */,
+				B066D04B1C7F03C700C69285 /* QLLabel.h */,
+				B066D04C1C7F03C700C69285 /* QLLabel.m */,
+			);
+			path = QLLabel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -211,9 +234,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B066D0471C7F038300C69285 /* QLAttributeItem.m in Sources */,
 				B066D0271C7F033800C69285 /* ViewController.m in Sources */,
 				B066D0241C7F033800C69285 /* AppDelegate.m in Sources */,
+				B066D04A1C7F03A700C69285 /* QLLabelConfig.m in Sources */,
 				B066D0211C7F033800C69285 /* main.m in Sources */,
+				B066D04D1C7F03C700C69285 /* QLLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +366,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = QLLabelDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = qili.QLLabelDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -351,6 +378,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = QLLabelDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = qili.QLLabelDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
