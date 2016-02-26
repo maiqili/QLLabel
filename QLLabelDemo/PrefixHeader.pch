@@ -1,0 +1,18 @@
+//
+//  PrefixHeader.pch
+//  QLLabelDemo
+//
+//  Created by maiqili on 16/2/25.
+//  Copyright © 2016年 maiqili. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
+#import <CoreText/CoreText.h>
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* PrefixHeader_pch */

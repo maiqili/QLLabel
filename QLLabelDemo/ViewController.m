@@ -7,21 +7,48 @@
 //
 
 #import "ViewController.h"
-
+#import "QLLabel.h"
 @interface ViewController ()
-
+@property (nonatomic, strong) QLLabel *textLabel;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    self.textLabel = [[QLLabel alloc] initWithFrame:CGRectMake(50, 150, 250, 100)];
+    self.textLabel.text = @"目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊”、“😂”“😊”、“😂”“😊”、“😂”“😊”、“😂”“😊”、“😂”目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一";
+    QLLabelAttributeItem *attributeItem = [[QLLabelAttributeItem alloc] init];
+    attributeItem.textColor = [UIColor blueColor];
+    attributeItem.attributeRange = NSMakeRange(50, 3);
+    attributeItem.highLigthColor = [UIColor blackColor];
+    attributeItem.underline = @1;
+    attributeItem.font = [UIFont systemFontOfSize:17];
+    QLLabelAttributeItem *attributeItem2 = [[QLLabelAttributeItem alloc] init];
+    attributeItem2.textColor = [UIColor yellowColor];
+    attributeItem2.attributeRange = NSMakeRange(64, 7);
+    attributeItem2.highLigthColor = [UIColor redColor];
+    attributeItem2.font = [UIFont systemFontOfSize:28];
+    QLLabelAttributeItem *attributeItem3 = [[QLLabelAttributeItem alloc] init];
+    attributeItem3.textColor = [UIColor yellowColor];
+    attributeItem3.attributeRange = NSMakeRange(38, 2);
+    attributeItem3.highLigthColor = [UIColor redColor];
+    attributeItem3.font = [UIFont systemFontOfSize:30];
+    //    self.coreTextView.lineSpace = 1;
+    self.textLabel.numberOfLines = 7;
+    self.textLabel.textAlignment = NSTextAlignmentLeft;
+    self.textLabel.attributeItemArray = [NSArray arrayWithObjects:attributeItem,attributeItem2,attributeItem3,nil];
+    //    [self.coreTextView sizeToFit];
+    self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin;
+    //    self.coreTextView.delegate = self;
+    //    [self.coreTextView sizeToFit];
+    [self.view addSubview:self.textLabel];
+
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end
