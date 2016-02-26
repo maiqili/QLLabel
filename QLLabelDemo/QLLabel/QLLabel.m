@@ -33,8 +33,6 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 @property (nonatomic, assign) BOOL hasDisPlayed; //defluat is NO 当已经绘制了一遍时，改变部分属性，需重新绘制
 @property (nonatomic, assign) NSRange selectAttributeItemRange;
 @property (nonatomic, strong) NSMutableAttributedString *displayAttributeString; //真正绘制的atttributeString，经过长度修改的atttributeString，增加长度判断和拼接省略号等操作
-@property (nonatomic, strong) NSMutableAttributedString *selectAttributeString; //选择状态下的displayAttributeString，相当于displayAttributeString的替身，用于，点击时改变点击文字的颜色
-//@property (nonatomic, assign) CTFrameRef coretextRef;//绘制的缓存矩形框参数
 @end
 
 //CFAttributedStringRef ：属性字符串，用于存储需要绘制的文字字符和字符属性
@@ -76,7 +74,6 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     CTFramesetterRef framesetterRef = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)_attributedText);
     CGSize suggestSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetterRef, CFRangeMake(0, _attributedText.length), NULL, CGSizeMake(CGRectGetWidth(self.bounds), MAXFLOAT), NULL);
     self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), suggestSize.width, suggestSize.height);
-//    self.bounds = CGRectMake(0, 0, suggestSize.width, suggestSize.height);
     
     CFRelease(framesetterRef);
 }
@@ -222,15 +219,10 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     
     [self setParameterToAttributeText];
     
-    if (!_selectAttributeString) {
-        _textRect = [self textRectWithNumberOfLines:_numberOfLines withAttributeString:[_attributedText mutableCopy]];
-        _displayAttributeString = [self lineCutAttributeStringWithTextRect:_textRect andAttributeString:[_attributedText mutableCopy]];
-    }
-   
+    _textRect = [self textRectWithNumberOfLines:_numberOfLines withAttributeString:[_attributedText mutableCopy]];
+    _displayAttributeString = [self lineCutAttributeStringWithTextRect:_textRect andAttributeString:[_attributedText mutableCopy]];
     
-    NSMutableAttributedString *drawAttribute = _selectAttributeString?_selectAttributeString:_displayAttributeString;
-    
-    if (drawAttribute.length == 0) {
+    if (_displayAttributeString.length == 0) {
         return;
     }
     
@@ -249,10 +241,10 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     
     // 步骤4：根据AttributedString生成CTFramesetterRef
     CTFramesetterRef framesetter =
-    CTFramesetterCreateWithAttributedString((CFAttributedStringRef)drawAttribute);
+    CTFramesetterCreateWithAttributedString((CFAttributedStringRef)_displayAttributeString);
     CTFrameRef frame =
     CTFramesetterCreateFrame(framesetter,
-                             CFRangeMake(0, [drawAttribute length]), path, NULL);
+                             CFRangeMake(0, [_displayAttributeString length]), path, NULL);
     
     // 步骤 6 进行绘制
     CTFrameDraw(frame, context);
@@ -386,7 +378,6 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)_displayAttributeString);
     CGMutablePathRef path = CGPathCreateMutable();
     CGPathAddRect(path, NULL, self.bounds);
-    //    CTFrameRef frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [self.attributedText length]), path, NULL);
     
     CTFrameRef textFrame;
     textFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [_displayAttributeString length]), path, NULL);
@@ -421,41 +412,19 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
             break;
         }
         
-        //        CALayer *rectLayer = [[CALayer alloc] init];
-        //        rectLayer.frame = rect;
-        //        rectLayer.backgroundColor = [self randomColor].CGColor;
-        //        rectLayer.opacity = 0.5;
-        //        [self.layer addSublayer:rectLayer];
-        
-        CALayer *lineLayer = [[CALayer alloc] init];
-        CGRect lineLayerFrame = CGRectApplyAffineTransform(CGRectMake((CGRectGetWidth(self.bounds) - CGRectGetWidth(_textRect))/2, linePoint.y - CGRectGetMinY(_textRect), CGRectGetWidth(_textRect), 1), transform);
-        lineLayer.frame = lineLayerFrame;
-        lineLayer.backgroundColor = [UIColor redColor].CGColor;
-        //        lineLayer.opacity = 0.5;
-        [self.layer addSublayer:lineLayer];
-        
         CFArrayRef runs = CTLineGetGlyphRuns(line);
         for (int j = 0; j < CFArrayGetCount(runs); j++) {
+            
             // 遍历每一个CTRun
             CGFloat runAscent,runDescent,lineSpace;
-            //            CGPoint lineOrigin = lineOrigins[i]; // 获取该行的初始坐标
             CTRunRef run = CFArrayGetValueAtIndex(runs, j); // 获取当前的CTRun
-            //            NSDictionary* attributes = (NSDictionary*)CTRunGetAttributes(run);
             CGRect runRect;
             runRect.size.width = CTRunGetTypographicBounds(run, CFRangeMake(0,0), &runAscent, &runDescent, &lineSpace);
             
-            // 这一段可参考Nimbus的NIAttributedLabel
             runRect = CGRectMake(linePoint.x + CTLineGetOffsetForStringIndex(line, CTRunGetStringRange(run).location, NULL), linePoint.y - runDescent - CGRectGetMinY(_textRect), runRect.size.width, runAscent + runDescent + lineSpace);
             runRect = CGRectApplyAffineTransform(runRect, transform);
             
-//            CALayer *ctRunLayer = [[CALayer alloc] init];
-//            ctRunLayer.frame = runRect;
-//            ctRunLayer.backgroundColor = [self randomColor].CGColor;
-//            ctRunLayer.opacity = 0.5;
-//            [self.layer addSublayer:ctRunLayer];
-            
             CFRange ctRunRange = CTRunGetStringRange(run);
-            //            NSLog(@"ctRunRange:%@",NSStringFromRange(NSMakeRange(ctRunRange.location, ctRunRange.length)));
             
             if (CGRectContainsPoint(runRect, point)) {
                 // 获得当前点击坐标对应的点击范围
@@ -470,12 +439,11 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     return runRange;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
     UITouch *touch = [touches anyObject];
     NSRange touchBeginRange = [self ctRunRangeAtPoint:[touch locationInView:self]];
     [self selectAttributeItem:touchBeginRange];
-    //    NSLog(@"touchBeginRange:%@",NSStringFromRange(touchBeginRange));
     [super touchesBegan:touches withEvent:event];
 }
 
@@ -485,11 +453,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     NSRange touchEndRange = [self ctRunRangeAtPoint:[touch locationInView:self]];
     [self selectAttributeItem:touchEndRange];
     self.selectAttributeItemRange = NSMakeRange(0, 0);
-//    [self setNeedsDisplay];
-    self.selectAttributeString = nil;
-    //    NSLog(@"touchEndRange:%@",NSStringFromRange(touchEndRange));
     [super touchesBegan:touches withEvent:event];
-    
 }
 
 - (CGRect)getLineBounds:(CTLineRef)line point:(CGPoint)point {
@@ -542,7 +506,6 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 
 - (void)selectAttributeItem:(NSRange)range
 {
-    //    NSLog(@"--------index:%ld",index);
     if (NSEqualRanges(range, QLRangeNotFound)) {
         NSLog(@"RangeNotFound");
         return;
@@ -555,19 +518,10 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
             if (!attributedItem.text) {
                 attributedItem.text = [self.text substringWithRange:attributedItem.attributeRange];
             }
-            //            NSLog(@"++++++++++++%@",attributedItem.text);
-//            if (attributedItem.highLigthColor) {
-//                NSMutableAttributedString* attributedString = [_displayAttributeString mutableCopy];
-//                [attributedString addAttribute:NSForegroundColorAttributeName value:attributedItem.highLigthColor range:attributedItem.attributeRange];
-//                self.selectAttributeString = attributedString;
-//                [self setNeedsDisplay];
-//            }
-            
             if (NSEqualRanges(self.selectAttributeItemRange, attributedItem.attributeRange)) {
                 if (self.delegate && [self.delegate respondsToSelector:@selector(QLLabel:didClickQLLabelAttributeString:)]) {
                     [self.delegate QLLabel:self didClickQLLabelAttributeString:attributedItem];
                 }
-//                                NSLog(@"点击了%@",attributedItem.text);
             }
             self.selectAttributeItemRange = attributedItem.attributeRange;
         }
