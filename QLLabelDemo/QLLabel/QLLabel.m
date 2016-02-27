@@ -8,9 +8,9 @@
 
 #import "QLLabel.h"
 
-#define QLHeadLineTailOffSet 3
-#define QLRangeNotFound NSMakeRange(0, 0)
-#define QLRangeContain(rangeA, rangeB) (rangeA.length >= rangeB.length && ((rangeA.location <= rangeB.location) && (NSMaxRange(rangeA) >= NSMaxRange(rangeB))))?YES:NO
+#define qlHeadLineTailOffSet 3
+#define qlRangeNotFound NSMakeRange(0, 0)
+#define qlRangeContain(rangeA, rangeB) (rangeA.length >= rangeB.length && ((rangeA.location <= rangeB.location) && (NSMaxRange(rangeA) >= NSMaxRange(rangeB))))?YES:NO
 static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 
 @implementation QLLabelAttributeItem
@@ -80,44 +80,54 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 
 -(void)setText:(NSString *)text
 {
-    _text = text;
-    _attributeItemArray = nil;
-    if (_hasDisPlayed) {
-        [self setNeedsDisplay];
+    if (_text != text) {
+        _text = text;
+        _attributeItemArray = nil;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
     }
 }
 
 -(void)setTextColor:(UIColor *)textColor
 {
-    _textColor = textColor;
-    if (_hasDisPlayed) {
-        [self setNeedsDisplay];
+    if (_textColor != textColor) {
+        _textColor = textColor;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
     }
 }
 
 -(void)setFont:(UIFont *)font
 {
-    _font = font;
-    if (_hasDisPlayed) {
-        [self setNeedsDisplay];
+    if (_font != font) {
+        _font = font;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
     }
 }
 
 -(void)setLineSpace:(CGFloat)lineSpace
 {
-    lineSpace = lineSpace>=1?lineSpace:1;
-    lineSpace = lineSpace<=20?lineSpace:20;
-    _lineSpace = lineSpace;
-    if (_hasDisPlayed) {
-        [self setNeedsDisplay];
+    if (_lineSpace != lineSpace) {
+        lineSpace = lineSpace>=1?lineSpace:1;
+        lineSpace = lineSpace<=20?lineSpace:20;
+        _lineSpace = lineSpace;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
     }
 }
 
 -(void)setTextAlignment:(NSTextAlignment)textAlignment
 {
-    _textAlignment = textAlignment;
-    if (_hasDisPlayed) {
-        [self setNeedsDisplay];
+    if (_textAlignment != textAlignment) {
+        _textAlignment = textAlignment;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
     }
 }
 
@@ -131,25 +141,31 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 
 -(void)setLineBreakMode:(NSLineBreakMode)lineBreakMode
 {
-    _lineBreakMode = lineBreakMode;
-    if (_hasDisPlayed) {
-        [self setNeedsDisplay];
+    if (_lineBreakMode != lineBreakMode) {
+        _lineBreakMode = lineBreakMode;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
     }
 }
 
 -(void)setNumberOfLines:(NSInteger)numberOfLines
 {
-    _numberOfLines = numberOfLines;
-    if (_hasDisPlayed) {
-        [self setNeedsDisplay];
+    if (_numberOfLines != numberOfLines) {
+        _numberOfLines = numberOfLines;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
     }
 }
 
 -(void)setAttributedText:(NSAttributedString *)attributedText
 {
-    _attributedText = attributedText;
-    if (_hasDisPlayed) {
-        [self setNeedsDisplay];
+    if (_attributedText != attributedText) {
+        _attributedText = attributedText;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
     }
 }
 
@@ -288,7 +304,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
         CTFramesetterRef framesetterRef = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)maxAttributedString);
         CGSize suggestSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetterRef, CFRangeMake(0, maxAttributedString.length), NULL, CGSizeMake(CGRectGetWidth(self.bounds), MAXFLOAT), NULL);
         
-        textHeigth = MIN(suggestSize.height + QLHeadLineTailOffSet, CGRectGetHeight(self.bounds));
+        textHeigth = MIN(suggestSize.height + qlHeadLineTailOffSet, CGRectGetHeight(self.bounds));
         
         CFRelease(framesetterRef);
     }else{
@@ -386,7 +402,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
         CFRelease(framesetter);
         CFRelease(textFrame);
         CFRelease(path);
-        return QLRangeNotFound;
+        return qlRangeNotFound;
     }
     
     CFIndex count = CFArrayGetCount(lines);
@@ -399,7 +415,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     CGAffineTransform transform =  CGAffineTransformMakeTranslation(0, self.bounds.size.height);
     transform = CGAffineTransformScale(transform, 1.f, -1.f);
     
-    NSRange runRange = QLRangeNotFound;
+    NSRange runRange = qlRangeNotFound;
     for (int i = 0; i < count; i++) {
         CGPoint linePoint = origins[i];
         CTLineRef line = CFArrayGetValueAtIndex(lines, i);
@@ -506,14 +522,14 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 
 - (void)selectAttributeItem:(NSRange)range
 {
-    if (NSEqualRanges(range, QLRangeNotFound)) {
+    if (NSEqualRanges(range, qlRangeNotFound)) {
         NSLog(@"RangeNotFound");
         return;
     }
     
     //compute the positions of space characters next to the charIndex
     for (QLLabelAttributeItem *attributedItem in self.attributeItemArray) {
-        if (QLRangeContain(attributedItem.attributeRange, range)) {
+        if (qlRangeContain(attributedItem.attributeRange, range)) {
             
             if (!attributedItem.text) {
                 attributedItem.text = [self.text substringWithRange:attributedItem.attributeRange];
