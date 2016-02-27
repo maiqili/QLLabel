@@ -12,7 +12,7 @@
 @property (nonatomic, strong) QLLabel *textLabel;
 @end
 
-@implementation ViewController
+@implementation ViewController 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -21,7 +21,7 @@
     self.textLabel.text = @"目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊”、“😂”“😊”、“😂”“😊”、“😂”“😊”、“😂”“😊”、“😂”目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一";
     QLLabelAttributeItem *attributeItem = [[QLLabelAttributeItem alloc] init];
     attributeItem.textColor = [UIColor blueColor];
-    attributeItem.attributeRange = NSMakeRange(50, 3);
+    attributeItem.attributeRange = NSMakeRange(5, 3);
     attributeItem.highLigthColor = [UIColor blackColor];
     attributeItem.underline = @1;
     attributeItem.font = [UIFont systemFontOfSize:17];
@@ -41,8 +41,8 @@
     self.textLabel.attributeItemArray = [NSArray arrayWithObjects:attributeItem,attributeItem2,attributeItem3,nil];
     //    [self.coreTextView sizeToFit];
     self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin;
-    //    self.coreTextView.delegate = self;
-    //    [self.coreTextView sizeToFit];
+        self.textLabel.delegate = self;
+    //    [textLabel sizeToFit];
     [self.view addSubview:self.textLabel];
 
 }
@@ -50,5 +50,8 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
-
+- (void)qlLabel:(QLLabel *)label didClickQLLabelAttributeString:(QLLabelAttributeItem *)attributeString
+{
+    NSLog(@"点击了:%@",attributeString.text);
+}
 @end

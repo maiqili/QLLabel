@@ -24,7 +24,8 @@
 
 @protocol QLLabelDelegate <NSObject>
 
-- (void)QLLabel:(QLLabel *)coreText didClickQLLabelAttributeString:(QLLabelAttributeItem *)attributeString;
+- (void)qlLabel:(QLLabel *)label didClickQLLabelAttributeString:(QLLabelAttributeItem *)attributeString;
+
 @end
 
 @interface QLLabel : UIView

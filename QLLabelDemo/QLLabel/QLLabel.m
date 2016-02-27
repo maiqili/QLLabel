@@ -340,53 +340,48 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
             CFRelease(framesetter);
             return nil;
         }
+        //截到最后一行
         CTLineRef line = CFArrayGetValueAtIndex(lines, count-1);
         CFRange lastLineRange = CTLineGetStringRange(line);
         NSUInteger truncationAttributePosition = lastLineRange.location + lastLineRange.length;
         NSMutableAttributedString *cutAttributedString = [[attributeString attributedSubstringFromRange:NSMakeRange(0, truncationAttributePosition)] mutableCopy];
+        NSMutableAttributedString *lastLineAttributeString = [[cutAttributedString attributedSubstringFromRange:NSMakeRange(lastLineRange.location, lastLineRange.length)] mutableCopy];
+        [lastLineAttributeString appendAttributedString:[self getEllipsesAttributeString]];
         
-        //Emoji表情占两个字符，因此需要判断
-        NSString *lastString = [[cutAttributedString attributedSubstringFromRange:NSMakeRange(cutAttributedString.length - 2, 2)] string];
-        BOOL isEmoji = [self stringContainsEmoji:lastString];
-        cutAttributedString = [[cutAttributedString attributedSubstringFromRange:NSMakeRange(0, cutAttributedString.length - (isEmoji?2:1))] mutableCopy];
-        [cutAttributedString appendAttributedString:[self getEllipsesAttributeString]];
+        //对最后一行做处理
+        lastLineAttributeString = [self cutLastLineAttributeString:lastLineAttributeString andWidth:CGRectGetWidth(_textRect)];
         
-        CFRelease(framesetter);
+        //替换最后一行
+        cutAttributedString = [[cutAttributedString attributedSubstringFromRange:NSMakeRange(0, lastLineRange.location)] mutableCopy];
+        [cutAttributedString appendAttributedString:lastLineAttributeString];
+        attributeString = cutAttributedString;
+        
         CFRelease(path);
         CFRelease(textFrame);
-        //剪切后递归判断一下
-        attributeString = [self charCutAttributeStringWithTextRect:textRect andAttributeString:cutAttributedString];
-    }else{
-        _textRect = [self textRectWithNumberOfLines:_numberOfLines withAttributeString:[attributeString mutableCopy]];//最后对textRect微调
+        CFRelease(framesetter);
     }
-    
+    _textRect = [self textRectWithNumberOfLines:_numberOfLines withAttributeString:[attributeString mutableCopy]];//最后对textRect微调
     CFRelease(framesetterRef);
     return attributeString;
 }
 
-//一行中微调，从最后一个字符开始减，减到完全合适为止
-- (NSMutableAttributedString *)charCutAttributeStringWithTextRect:(CGRect)textRect andAttributeString:(NSMutableAttributedString *)attributeString
+//单独拿出最后一行进行处理
+- (NSMutableAttributedString *)cutLastLineAttributeString:(NSMutableAttributedString *)attributeString andWidth:(CGFloat)width
 {
-    CTFramesetterRef framesetterRef = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)attributeString);
-    CGSize suggestSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetterRef, CFRangeMake(0, attributeString.length), NULL, CGSizeMake(CGRectGetWidth(textRect), MAXFLOAT), NULL);
-    
-    if (suggestSize.height > CGRectGetHeight(textRect)) {
-        NSMutableAttributedString *cutAttributedString = [[attributeString attributedSubstringFromRange:NSMakeRange(0, attributeString.length - 1)] mutableCopy];//传到这里的attributeString一定是以...结尾的，先截掉再判断
-        
+    CTLineRef truncationToken = CTLineCreateWithAttributedString((CFAttributedStringRef)attributeString);
+    CGFloat lastLineWidth = (CGFloat)CTLineGetTypographicBounds(truncationToken, nil, nil,nil);
+    CFRelease(truncationToken);
+    if (lastLineWidth>width) {
+        NSLog(@"不够宽");
         //Emoji表情占两个字符，因此需要判断
-        NSString *lastString = [[cutAttributedString attributedSubstringFromRange:NSMakeRange(cutAttributedString.length - 2, 2)] string];
+        NSString *lastString = [[attributeString attributedSubstringFromRange:NSMakeRange(attributeString.length - 3, 2)] string];
         BOOL isEmoji = [self stringContainsEmoji:lastString];
-        cutAttributedString = [[cutAttributedString attributedSubstringFromRange:NSMakeRange(0, cutAttributedString.length - (isEmoji?2:1))] mutableCopy];
-        [cutAttributedString appendAttributedString:[self getEllipsesAttributeString]];
-        
-        //剪切后递归判断一下
-        attributeString = [self charCutAttributeStringWithTextRect:textRect andAttributeString:cutAttributedString];
+        [attributeString deleteCharactersInRange:NSMakeRange(attributeString.length - (isEmoji?3:2), isEmoji?2:1)]; //减去省略号前一个符号；
+        return [self cutLastLineAttributeString:attributeString andWidth:width];
     }else{
-        _textRect = [self textRectWithNumberOfLines:_numberOfLines withAttributeString:[attributeString mutableCopy]];//最后对textRect微调
-        
+        NSLog(@"够宽");
+        return attributeString;
     }
-    CFRelease(framesetterRef);
-    return attributeString;
 }
 
 - (NSRange)ctRunRangeAtPoint:(CGPoint)point{
@@ -535,8 +530,8 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
                 attributedItem.text = [self.text substringWithRange:attributedItem.attributeRange];
             }
             if (NSEqualRanges(self.selectAttributeItemRange, attributedItem.attributeRange)) {
-                if (self.delegate && [self.delegate respondsToSelector:@selector(QLLabel:didClickQLLabelAttributeString:)]) {
-                    [self.delegate QLLabel:self didClickQLLabelAttributeString:attributedItem];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(qlLabel:didClickQLLabelAttributeString:)]) {
+                    [self.delegate qlLabel:self didClickQLLabelAttributeString:attributedItem];
                 }
             }
             self.selectAttributeItemRange = attributedItem.attributeRange;
