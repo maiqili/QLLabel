@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface ViewController : UIViewController
+#import "QLLabel/QLLabel.h"
+@interface ViewController : UIViewController <QLLabelDelegate>
 
 
 @end
