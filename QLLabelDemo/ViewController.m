@@ -44,7 +44,12 @@
     image.imageHeigth = @30;
     image.imageWidth = @30;
     image.index = 5;
-    self.textLabel.imageItemArray = [NSArray arrayWithObject:image];
+    QLLabelImageItem *image2 = [[QLLabelImageItem alloc] init];
+    image2.image = [UIImage imageNamed:@"coretext-img-1"];
+    image2.imageHeigth = @20;
+    image2.imageWidth = @30;
+    image2.index = 28;
+    self.textLabel.imageItemArray = [NSArray arrayWithObjects:image,image2,nil];
     //    [self.coreTextView sizeToFit];
     self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin;
     self.textLabel.delegate = self;

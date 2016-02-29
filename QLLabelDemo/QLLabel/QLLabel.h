@@ -16,6 +16,8 @@
 @property (nonatomic, assign) NSInteger index;
 @property (nonatomic, assign) NSNumber *imageHeigth;
 @property (nonatomic, strong) NSNumber *imageWidth;
+// 此坐标是 CoreText 的坐标系，而不是UIKit的坐标系
+@property (nonatomic) CGRect imagePosition;
 @end
 
 

@@ -182,6 +182,16 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
+-(void)setImageItemArray:(NSArray *)imageItemArray
+{
+    if (_imageItemArray != imageItemArray) {
+        _imageItemArray = imageItemArray;
+        if (_hasDisPlayed) {
+            [self setNeedsDisplay];
+        }
+    }
+}
+
 -(NSAttributedString *)getEllipsesAttributeString
 {
     NSDictionary *dict = @{
@@ -279,9 +289,12 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     // 步骤 6 进行绘制
     CTFrameDraw(frame, context);
     
-    // 步骤10：绘制图片
-    UIImage *image = [UIImage imageNamed:@"coretext-img-1.png"];
-    CGContextDrawImage(context, [self calculateImagePositionInCTFrame:frame], image.CGImage);
+    [self calculateImagePositionInCTFrame:frame];
+    
+    for (QLLabelImageItem *imageItem in _imageItemArray) {
+        CGContextDrawImage(context, imageItem.imagePosition, imageItem.image.CGImage);
+    }
+    
     
     _hasDisPlayed = YES;
     // 步骤 7 内存释放管理
@@ -656,7 +669,11 @@ static CGFloat widthCallback(void *ref) {
  *
  *  @return 绘制图片的区域
  */
-- (CGRect)calculateImagePositionInCTFrame:(CTFrameRef)ctFrame {
+- (void)calculateImagePositionInCTFrame:(CTFrameRef)ctFrame{
+    
+    if ([_imageItemArray count] == 0) {
+        return;
+    }
     
     // 获得CTLine数组
     NSArray *lines = (NSArray *)CTFrameGetLines(ctFrame);
@@ -664,6 +681,7 @@ static CGFloat widthCallback(void *ref) {
     CGPoint lineOrigins[lineCount];
     CTFrameGetLineOrigins(ctFrame, CFRangeMake(0, 0), lineOrigins);
     
+    NSInteger imageIndex = 0;
     // 遍历每个CTLine
     for (NSInteger i = 0 ; i < lineCount; i++) {
         
@@ -679,11 +697,12 @@ static CGFloat widthCallback(void *ref) {
             if (delegate == nil) {
                 continue;
             }
-            
+            //若果是字典就是自己设置的图片
             NSDictionary *metaDic = CTRunDelegateGetRefCon(delegate);
             if (![metaDic isKindOfClass:[NSDictionary class]]) {
                 continue;
             }
+            
             
             CGRect runBounds;
             CGFloat ascent;
@@ -701,10 +720,14 @@ static CGFloat widthCallback(void *ref) {
             CGRect colRect = CGPathGetBoundingBox(pathRef);
             
             CGRect delegateBounds = CGRectOffset(runBounds, colRect.origin.x, colRect.origin.y);
-            return delegateBounds;
+            QLLabelImageItem *imageItem = [_imageItemArray objectAtIndex:imageIndex];
+            imageItem.imagePosition = delegateBounds;
+            imageIndex++;
+            if (imageIndex > [_imageItemArray count]) {
+                return;
+            }
         }
     }
-    return CGRectZero;
 }
 
 - (UIColor *)randomColor
