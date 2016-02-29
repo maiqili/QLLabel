@@ -17,11 +17,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.textLabel = [[QLLabel alloc] initWithFrame:CGRectMake(50, 150, 250, 200)];
+    self.textLabel = [[QLLabel alloc] initWithFrame:CGRectMake(50, 150, 250, 180)];
     self.textLabel.text = @"目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊”、“😂”“😊”、“😂”“😊”、“😂”“😊”、“😂”“😊”、“😂”目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一";
     QLLabelAttributeItem *attributeItem = [[QLLabelAttributeItem alloc] init];
     attributeItem.textColor = [UIColor blueColor];
-    attributeItem.attributeRange = NSMakeRange(5, 3);
+    attributeItem.attributeRange = NSMakeRange(6, 3);
     attributeItem.highLigthColor = [UIColor blackColor];
     attributeItem.underline = @1;
     attributeItem.font = [UIFont systemFontOfSize:17];
@@ -39,6 +39,12 @@
     self.textLabel.numberOfLines = 7;
     self.textLabel.textAlignment = NSTextAlignmentLeft;
     self.textLabel.attributeItemArray = [NSArray arrayWithObjects:attributeItem,attributeItem2,attributeItem3,nil];
+    QLLabelImageItem *image = [[QLLabelImageItem alloc] init];
+    image.image = [UIImage imageNamed:@"coretext-img-1"];
+    image.imageHeigth = @30;
+    image.imageWidth = @30;
+    image.index = 5;
+    self.textLabel.imageItemArray = [NSArray arrayWithObject:image];
     //    [self.coreTextView sizeToFit];
     self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin;
     self.textLabel.delegate = self;

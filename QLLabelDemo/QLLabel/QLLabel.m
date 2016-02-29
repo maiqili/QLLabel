@@ -13,6 +13,17 @@
 #define qlRangeContain(rangeA, rangeB) (rangeA.length >= rangeB.length && ((rangeA.location <= rangeB.location) && (NSMaxRange(rangeA) >= NSMaxRange(rangeB))))?YES:NO
 static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 
+@implementation QLLabelImageItem
+-(instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _index = 0;
+    }
+    return self;
+}
+@end
+
 @implementation QLLabelAttributeItem
 -(instancetype)init
 {
@@ -28,11 +39,13 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     return self;
 }
 @end
+
 @interface QLLabel()
 @property (nonatomic, assign) CGRect textRect;
 @property (nonatomic, assign) BOOL hasDisPlayed; //defluat is NO 当已经绘制了一遍时，改变部分属性，需重新绘制
 @property (nonatomic, assign) NSRange selectAttributeItemRange;
 @property (nonatomic, strong) NSMutableAttributedString *displayAttributeString; //真正绘制的atttributeString，经过长度修改的atttributeString，增加长度判断和拼接省略号等操作
+@property (nonatomic, strong) NSMutableArray *imageSizeArray; //Object:NSDictionart
 @end
 
 //CFAttributedStringRef ：属性字符串，用于存储需要绘制的文字字符和字符属性
@@ -54,7 +67,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
         _lineSpace = 1;
         _numberOfLines = 1;
         self.userInteractionEnabled = YES;
-        
+        _imageSizeArray = [NSMutableArray array];
     }
     return self;
 }
@@ -190,6 +203,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
             mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:_text];
         }
     }
+    [self setImageArrayWithAttributeText:mutableAttributedString];
     [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:_textColor range:NSMakeRange(0, mutableAttributedString.length)];
     [mutableAttributedString addAttribute:NSFontAttributeName value:_font range:NSMakeRange(0, mutableAttributedString.length)];
     // 设置行距等样式
@@ -265,6 +279,10 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     // 步骤 6 进行绘制
     CTFrameDraw(frame, context);
     
+    // 步骤10：绘制图片
+    UIImage *image = [UIImage imageNamed:@"coretext-img-1.png"];
+    CGContextDrawImage(context, [self calculateImagePositionInCTFrame:frame], image.CGImage);
+    
     _hasDisPlayed = YES;
     // 步骤 7 内存释放管理
     CFRelease(frame);
@@ -315,6 +333,73 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     CFRelease(textFrame);
     CFRelease(path);
     return CGRectMake(0, (CGRectGetHeight(self.bounds)-textHeigth)/2, CGRectGetWidth(self.bounds), textHeigth);
+}
+- (void)setImageArrayWithAttributeText:(NSMutableAttributedString *)attributeString
+{
+    //如果已经绘制过一遍，说明已经插入过图片，无需重新插入
+    if (!_hasDisPlayed) {
+        for (QLLabelImageItem *image in _imageItemArray) {
+            
+            // 步骤9：图文混排部分
+            // CTRunDelegateCallbacks：一个用于保存指针的结构体，由CTRun delegate进行回调
+            CTRunDelegateCallbacks callbacks;
+            memset(&callbacks, 0, sizeof(CTRunDelegateCallbacks));
+            callbacks.version = kCTRunDelegateVersion1;
+            callbacks.getAscent = ascentCallback;
+            callbacks.getDescent = descentCallback;
+            callbacks.getWidth = widthCallback;
+            
+            // 图片信息字典
+            NSDictionary *imgInfoDic = @{@"width":image.imageWidth,@"height":image.imageHeigth};
+            [_imageSizeArray addObject:imgInfoDic];
+            
+            // 设置CTRun的代理
+            CTRunDelegateRef delegate = CTRunDelegateCreate(&callbacks, (__bridge void *)imgInfoDic);
+            
+            // 使用0xFFFC作为空白的占位符
+            unichar objectReplacementChar = 0xFFFC;
+            NSString *content = [NSString stringWithCharacters:&objectReplacementChar length:1];
+            NSMutableAttributedString *space = [[NSMutableAttributedString alloc] initWithString:content];
+            CFAttributedStringSetAttribute((CFMutableAttributedStringRef)space, CFRangeMake(0, 1), kCTRunDelegateAttributeName, delegate);
+            CFRelease(delegate);
+            
+            // 将创建的空白AttributedString插入进当前的attrString中，位置可以随便指定，不能越界
+            [attributeString insertAttributedString:space atIndex:image.index];
+            
+        }
+    }
+}
+
+#pragma mark - CTRun delegate 回调方法
+static CGFloat ascentCallback(void *ref) {
+    
+    //防止crash
+    BOOL isDict = [(__bridge id)ref isKindOfClass:[NSDictionary class]];
+    if (isDict) {
+        NSNumber *ascent = (NSNumber *)[(__bridge NSDictionary *)ref objectForKey:@"height"];
+        if (ascent) {
+            return [ascent floatValue];
+        }
+    }
+    return 0;
+}
+
+static CGFloat descentCallback(void *ref) {
+    
+    return 0;
+}
+
+static CGFloat widthCallback(void *ref) {
+    
+    //防止crash
+    BOOL isDict = [(__bridge id)ref isKindOfClass:[NSDictionary class]];
+    if (isDict) {
+        NSNumber *ascent = (NSNumber *)[(__bridge NSDictionary *)ref objectForKey:@"width"];
+        if (ascent) {
+            return [ascent floatValue];
+        }
+    }
+    return 0;
 }
 
 //计算将要绘制的内容是否超过绘制区域，超过则裁剪--行裁剪（以行为单位）
@@ -527,7 +612,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
         if (qlRangeContain(attributedItem.attributeRange, range)) {
             
             if (!attributedItem.text) {
-                attributedItem.text = [self.text substringWithRange:attributedItem.attributeRange];
+                attributedItem.text = [self.attributedText attributedSubstringFromRange:attributedItem.attributeRange].string;
             }
             if (NSEqualRanges(self.selectAttributeItemRange, attributedItem.attributeRange)) {
                 if (self.delegate && [self.delegate respondsToSelector:@selector(qlLabel:didClickQLLabelAttributeString:)]) {
@@ -563,6 +648,63 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
             break;
     }
     return textAlignment;
+}
+/**
+ *  根据CTFrameRef获得绘制图片的区域
+ *
+ *  @param ctFrame CTFrameRef对象
+ *
+ *  @return 绘制图片的区域
+ */
+- (CGRect)calculateImagePositionInCTFrame:(CTFrameRef)ctFrame {
+    
+    // 获得CTLine数组
+    NSArray *lines = (NSArray *)CTFrameGetLines(ctFrame);
+    NSInteger lineCount = [lines count];
+    CGPoint lineOrigins[lineCount];
+    CTFrameGetLineOrigins(ctFrame, CFRangeMake(0, 0), lineOrigins);
+    
+    // 遍历每个CTLine
+    for (NSInteger i = 0 ; i < lineCount; i++) {
+        
+        CTLineRef line = (__bridge CTLineRef)lines[i];
+        NSArray *runObjArray = (NSArray *)CTLineGetGlyphRuns(line);
+        
+        // 遍历每个CTLine中的CTRun
+        for (id runObj in runObjArray) {
+            
+            CTRunRef run = (__bridge CTRunRef)runObj;
+            NSDictionary *runAttributes = (NSDictionary *)CTRunGetAttributes(run);
+            CTRunDelegateRef delegate = (__bridge CTRunDelegateRef)[runAttributes valueForKey:(id)kCTRunDelegateAttributeName];
+            if (delegate == nil) {
+                continue;
+            }
+            
+            NSDictionary *metaDic = CTRunDelegateGetRefCon(delegate);
+            if (![metaDic isKindOfClass:[NSDictionary class]]) {
+                continue;
+            }
+            
+            CGRect runBounds;
+            CGFloat ascent;
+            CGFloat descent;
+            
+            runBounds.size.width = CTRunGetTypographicBounds(run, CFRangeMake(0, 0), &ascent, &descent, NULL);
+            runBounds.size.height = ascent + descent;
+            
+            CGFloat xOffset = CTLineGetOffsetForStringIndex(line, CTRunGetStringRange(run).location, NULL);
+            runBounds.origin.x = lineOrigins[i].x + xOffset;
+            runBounds.origin.y = lineOrigins[i].y;
+            runBounds.origin.y -= descent;
+            
+            CGPathRef pathRef = CTFrameGetPath(ctFrame);
+            CGRect colRect = CGPathGetBoundingBox(pathRef);
+            
+            CGRect delegateBounds = CGRectOffset(runBounds, colRect.origin.x, colRect.origin.y);
+            return delegateBounds;
+        }
+    }
+    return CGRectZero;
 }
 
 - (UIColor *)randomColor

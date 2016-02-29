@@ -18,6 +18,7 @@
 		B066D0511C7F040200C69285 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B066D0501C7F040200C69285 /* CoreText.framework */; };
 		B066D0531C7F043600C69285 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B066D0521C7F043600C69285 /* UIKit.framework */; };
 		B066D0571C801DA900C69285 /* QLLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = B066D0561C801DA900C69285 /* QLLabel.m */; };
+		B066D0641C84313100C69285 /* coretext-img-1.png in Resources */ = {isa = PBXBuildFile; fileRef = B066D0631C84313100C69285 /* coretext-img-1.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		B066D0541C7F044D00C69285 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		B066D0551C801DA900C69285 /* QLLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QLLabel.h; sourceTree = "<group>"; };
 		B066D0561C801DA900C69285 /* QLLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QLLabel.m; sourceTree = "<group>"; };
+		B066D0631C84313100C69285 /* coretext-img-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coretext-img-1.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 		B066D01F1C7F033800C69285 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B066D0631C84313100C69285 /* coretext-img-1.png */,
 				B066D0521C7F043600C69285 /* UIKit.framework */,
 				B066D0501C7F040200C69285 /* CoreText.framework */,
 				B066D04E1C7F03F600C69285 /* QuartzCore.framework */,
@@ -221,6 +224,7 @@
 				B066D02F1C7F033800C69285 /* LaunchScreen.storyboard in Resources */,
 				B066D02C1C7F033800C69285 /* Assets.xcassets in Resources */,
 				B066D02A1C7F033800C69285 /* Main.storyboard in Resources */,
+				B066D0641C84313100C69285 /* coretext-img-1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

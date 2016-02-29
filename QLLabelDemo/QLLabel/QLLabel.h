@@ -11,6 +11,14 @@
 
 @class QLLabel,QLLabelAttributeItem;
 
+@interface QLLabelImageItem : NSObject
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, assign) NSInteger index;
+@property (nonatomic, assign) NSNumber *imageHeigth;
+@property (nonatomic, strong) NSNumber *imageWidth;
+@end
+
+
 @interface QLLabelAttributeItem : NSObject
 
 @property (nonatomic, strong) UIColor *textColor;  // default is nil (text draws black)
@@ -39,6 +47,7 @@
 @property (nonatomic) NSInteger numberOfLines;
 
 @property (nonatomic, strong) NSArray *attributeItemArray;
+@property (nonatomic, strong) NSArray *imageItemArray;
 @property (nonatomic, strong) NSAttributedString *attributedText;  // default is nil
 
 @property (nonatomic, weak) id <QLLabelDelegate> delegate;
