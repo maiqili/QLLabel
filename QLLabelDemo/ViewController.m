@@ -17,8 +17,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.textLabel = [[QLLabel alloc] initWithFrame:CGRectMake(50, 150, 250, 180)];
-    self.textLabel.text = @"目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊😊”、“😂”“😊”、“😂”“😊”、“😂”“😊”、“😂”“😊”、“😂”目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一";
+    self.textLabel = [[QLLabel alloc] initWithFrame:CGRectMake(50, 100, 250, 180)];
+    self.textLabel.text = @"目需要所以简单www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是参照这个 demo 来的，不过其中我有遇到一www.baidu.com的研究了下protobuf。我也是参照网上的博客，所以大部分内容我也就不重复造轮子了。首先protobuf介绍点击这里，使用介绍点击这里，使用demo看 这里 。我个人s的第一个例子也是";
+    self.textLabel.backgroundColor = [UIColor greenColor];
     QLLabelAttributeItem *attributeItem = [[QLLabelAttributeItem alloc] init];
     attributeItem.textColor = [UIColor blueColor];
     attributeItem.attributeRange = NSMakeRange(6, 3);
@@ -50,10 +51,9 @@
     image2.imageWidth = @30;
     image2.index = 28;
     self.textLabel.imageItemArray = [NSArray arrayWithObjects:image,image2,nil];
-    //    [self.coreTextView sizeToFit];
     self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleRightMargin;
     self.textLabel.delegate = self;
-    //    [textLabel sizeToFit];
+    [self.textLabel sizeToFit];
     [self.view addSubview:self.textLabel];
 
 }

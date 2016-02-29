@@ -95,6 +95,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 {
     if (_text != text) {
         _text = text;
+        _attributedText = [[NSAttributedString alloc] initWithString:_text];
         _attributeItemArray = nil;
         if (_hasDisPlayed) {
             [self setNeedsDisplay];
@@ -186,6 +187,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 {
     if (_imageItemArray != imageItemArray) {
         _imageItemArray = imageItemArray;
+        [self setImageArrayWithAttributeText:[self.attributedText mutableCopy]];
         if (_hasDisPlayed) {
             [self setNeedsDisplay];
         }
@@ -205,15 +207,8 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 //初始化attributeText
 - (void)setParameterToAttributeText
 {
-    NSMutableAttributedString *mutableAttributedString;
-    if (_attributedText) {
-        mutableAttributedString = [_attributedText mutableCopy];
-    }else {
-        if (_text.length != 0) {
-            mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:_text];
-        }
-    }
-    [self setImageArrayWithAttributeText:mutableAttributedString];
+    NSMutableAttributedString *mutableAttributedString = [_attributedText mutableCopy];
+    
     [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:_textColor range:NSMakeRange(0, mutableAttributedString.length)];
     [mutableAttributedString addAttribute:NSFontAttributeName value:_font range:NSMakeRange(0, mutableAttributedString.length)];
     // 设置行距等样式
@@ -381,6 +376,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
             
         }
     }
+    self.attributedText = attributeString;
 }
 
 #pragma mark - CTRun delegate 回调方法
@@ -723,7 +719,7 @@ static CGFloat widthCallback(void *ref) {
             QLLabelImageItem *imageItem = [_imageItemArray objectAtIndex:imageIndex];
             imageItem.imagePosition = delegateBounds;
             imageIndex++;
-            if (imageIndex > [_imageItemArray count]) {
+            if (imageIndex >= [_imageItemArray count]) {
                 return;
             }
         }
