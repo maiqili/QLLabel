@@ -54,4 +54,6 @@
 
 @property (nonatomic, weak) id <QLLabelDelegate> delegate;
 
+- (CGSize)sizeThatFits:(CGSize)size;
+- (void)sizeToFit;
 @end

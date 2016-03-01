@@ -45,7 +45,9 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 @property (nonatomic, assign) BOOL hasDisPlayed; //defluat is NO 当已经绘制了一遍时，改变部分属性，需重新绘制
 @property (nonatomic, assign) NSRange selectAttributeItemRange;
 @property (nonatomic, strong) NSMutableAttributedString *displayAttributeString; //真正绘制的atttributeString，经过长度修改的atttributeString，增加长度判断和拼接省略号等操作
+@property (nonatomic, strong) NSMutableAttributedString *selectAttributeString; //选择状态下的displayAttributeString，相当于displayAttributeString的替身，用于，点击时改变点击文字的颜色
 @property (nonatomic, strong) NSMutableArray *imageSizeArray; //Object:NSDictionart
+@property (nonatomic, assign) CTFrameRef ctFrame;   //存放绘制时的ctfraneRef
 @end
 
 //CFAttributedStringRef ：属性字符串，用于存储需要绘制的文字字符和字符属性
@@ -59,7 +61,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor clearColor];
         _font = [UIFont systemFontOfSize:17];
         _textColor = [UIColor blackColor];
         _textAlignment = NSTextAlignmentLeft;
@@ -72,26 +74,34 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     return self;
 }
 
--(void)setFrame:(CGRect)frame
+- (void)setFrame:(CGRect)frame
 {
     [super setFrame:frame];
     [self setNeedsDisplay];
 }
 
--(void)sizeToFit
+- (void)sizeToFit
 {
     [super sizeToFit];
+    
+    CGSize suggestSize = [self sizeThatFits:self.bounds.size];
+    self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), suggestSize.width, suggestSize.height);
+}
+
+- (CGSize)sizeThatFits:(CGSize)size
+{
+    [super sizeThatFits:size];
     
     _numberOfLines = 0;
     [self setParameterToAttributeText];
     CTFramesetterRef framesetterRef = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)_attributedText);
-    CGSize suggestSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetterRef, CFRangeMake(0, _attributedText.length), NULL, CGSizeMake(CGRectGetWidth(self.bounds), MAXFLOAT), NULL);
-    self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), suggestSize.width, suggestSize.height);
-    
+    CGSize suggestSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetterRef, CFRangeMake(0, _attributedText.length), NULL, CGSizeMake(size.width, MAXFLOAT), NULL);
     CFRelease(framesetterRef);
+    
+    return suggestSize;
 }
 
--(void)setText:(NSString *)text
+- (void)setText:(NSString *)text
 {
     if (_text != text) {
         _text = text;
@@ -103,7 +113,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setTextColor:(UIColor *)textColor
+- (void)setTextColor:(UIColor *)textColor
 {
     if (_textColor != textColor) {
         _textColor = textColor;
@@ -113,7 +123,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setFont:(UIFont *)font
+- (void)setFont:(UIFont *)font
 {
     if (_font != font) {
         _font = font;
@@ -123,7 +133,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setLineSpace:(CGFloat)lineSpace
+- (void)setLineSpace:(CGFloat)lineSpace
 {
     if (_lineSpace != lineSpace) {
         lineSpace = lineSpace>=1?lineSpace:1;
@@ -135,7 +145,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setTextAlignment:(NSTextAlignment)textAlignment
+- (void)setTextAlignment:(NSTextAlignment)textAlignment
 {
     if (_textAlignment != textAlignment) {
         _textAlignment = textAlignment;
@@ -145,7 +155,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setAttributeItemArray:(NSArray *)attributeItemArray
+- (void)setAttributeItemArray:(NSArray *)attributeItemArray
 {
     _attributeItemArray = [attributeItemArray copy];
     if (_hasDisPlayed) {
@@ -153,7 +163,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setLineBreakMode:(NSLineBreakMode)lineBreakMode
+- (void)setLineBreakMode:(NSLineBreakMode)lineBreakMode
 {
     if (_lineBreakMode != lineBreakMode) {
         _lineBreakMode = lineBreakMode;
@@ -163,7 +173,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setNumberOfLines:(NSInteger)numberOfLines
+- (void)setNumberOfLines:(NSInteger)numberOfLines
 {
     if (_numberOfLines != numberOfLines) {
         _numberOfLines = numberOfLines;
@@ -173,7 +183,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setAttributedText:(NSAttributedString *)attributedText
+- (void)setAttributedText:(NSAttributedString *)attributedText
 {
     if (_attributedText != attributedText) {
         _attributedText = attributedText;
@@ -183,7 +193,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
--(void)setImageItemArray:(NSArray *)imageItemArray
+- (void)setImageItemArray:(NSArray *)imageItemArray
 {
     if (_imageItemArray != imageItemArray) {
         _imageItemArray = imageItemArray;
@@ -194,6 +204,17 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     }
 }
 
+- (void)setCtFrame:(CTFrameRef)ctFrame {
+    if (_ctFrame != ctFrame) {
+        if (_ctFrame != nil) {
+            CFRelease(_ctFrame);
+        }
+        CFRetain(ctFrame);
+        _ctFrame = ctFrame;
+    }
+}
+
+//省略号样式
 -(NSAttributedString *)getEllipsesAttributeString
 {
     NSDictionary *dict = @{
@@ -252,12 +273,19 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
 {
     [super drawRect:rect];
     
-    [self setParameterToAttributeText];
+    //判断是否高亮，高亮的状态下只是改变了部分文字的颜色，不需要进行重新计算attribute的参数转态
+    NSMutableAttributedString *drawString;
+    if (_selectAttributeString) {
+        drawString = _selectAttributeString;
+    }else{
+        [self setParameterToAttributeText];
+        
+        _textRect = [self textRectWithNumberOfLines:_numberOfLines withAttributeString:[_attributedText mutableCopy]];
+        _displayAttributeString = [self lineCutAttributeStringWithTextRect:_textRect andAttributeString:[_attributedText mutableCopy]];
+        drawString = _displayAttributeString;
+    }
     
-    _textRect = [self textRectWithNumberOfLines:_numberOfLines withAttributeString:[_attributedText mutableCopy]];
-    _displayAttributeString = [self lineCutAttributeStringWithTextRect:_textRect andAttributeString:[_attributedText mutableCopy]];
-    
-    if (_displayAttributeString.length == 0) {
+    if (drawString.length == 0) {
         return;
     }
     
@@ -274,14 +302,14 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     CGMutablePathRef path = CGPathCreateMutable();
     CGPathAddRect(path, NULL, _textRect);
     
-    // 步骤4：根据AttributedString生成CTFramesetterRef
+    // 步骤4 根据AttributedString生成CTFramesetterRef
     CTFramesetterRef framesetter =
-    CTFramesetterCreateWithAttributedString((CFAttributedStringRef)_displayAttributeString);
+    CTFramesetterCreateWithAttributedString((CFAttributedStringRef)drawString);
     CTFrameRef frame =
     CTFramesetterCreateFrame(framesetter,
-                             CFRangeMake(0, [_displayAttributeString length]), path, NULL);
+                             CFRangeMake(0, [drawString length]), path, NULL);
     
-    // 步骤 6 进行绘制
+    // 步骤 5 进行绘制
     CTFrameDraw(frame, context);
     
     [self calculateImagePositionInCTFrame:frame];
@@ -290,9 +318,10 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
         CGContextDrawImage(context, imageItem.imagePosition, imageItem.image.CGImage);
     }
     
-    
+    self.ctFrame = frame;
     _hasDisPlayed = YES;
-    // 步骤 7 内存释放管理
+    
+    // 步骤 6 内存释放管理
     CFRelease(frame);
     CFRelease(path);
     CFRelease(framesetter);
@@ -342,6 +371,7 @@ static NSString* const kEllipsesCharacter = @"\u2026";// 省略号
     CFRelease(path);
     return CGRectMake(0, (CGRectGetHeight(self.bounds)-textHeigth)/2, CGRectGetWidth(self.bounds), textHeigth);
 }
+
 - (void)setImageArrayWithAttributeText:(NSMutableAttributedString *)attributeString
 {
     //如果已经绘制过一遍，说明已经插入过图片，无需重新插入
@@ -480,17 +510,9 @@ static CGFloat widthCallback(void *ref) {
 
 - (NSRange)ctRunRangeAtPoint:(CGPoint)point{
     
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)_displayAttributeString);
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathAddRect(path, NULL, self.bounds);
-    
-    CTFrameRef textFrame;
-    textFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [_displayAttributeString length]), path, NULL);
+    CTFrameRef textFrame = _ctFrame;
     CFArrayRef lines = CTFrameGetLines(textFrame);
     if (!lines) {
-        CFRelease(framesetter);
-        CFRelease(textFrame);
-        CFRelease(path);
         return qlRangeNotFound;
     }
     
@@ -538,9 +560,6 @@ static CGFloat widthCallback(void *ref) {
             }
         }
     }
-    CFRelease(framesetter);
-    CFRelease(textFrame);
-    CFRelease(path);
     return runRange;
 }
 
@@ -558,6 +577,8 @@ static CGFloat widthCallback(void *ref) {
     NSRange touchEndRange = [self ctRunRangeAtPoint:[touch locationInView:self]];
     [self selectAttributeItem:touchEndRange];
     self.selectAttributeItemRange = NSMakeRange(0, 0);
+    self.selectAttributeString = nil;
+    [self setNeedsDisplay];
     [super touchesBegan:touches withEvent:event];
 }
 
@@ -619,9 +640,14 @@ static CGFloat widthCallback(void *ref) {
     //compute the positions of space characters next to the charIndex
     for (QLLabelAttributeItem *attributedItem in self.attributeItemArray) {
         if (qlRangeContain(attributedItem.attributeRange, range)) {
-            
             if (!attributedItem.text) {
                 attributedItem.text = [self.attributedText attributedSubstringFromRange:attributedItem.attributeRange].string;
+            }
+            if (attributedItem.highLigthColor) {
+                NSMutableAttributedString* attributedString = [_displayAttributeString mutableCopy];
+                [attributedString addAttribute:NSForegroundColorAttributeName value:attributedItem.highLigthColor range:attributedItem.attributeRange];
+                self.selectAttributeString = attributedString;
+                [self setNeedsDisplay];
             }
             if (NSEqualRanges(self.selectAttributeItemRange, attributedItem.attributeRange)) {
                 if (self.delegate && [self.delegate respondsToSelector:@selector(qlLabel:didClickQLLabelAttributeString:)]) {
@@ -629,6 +655,7 @@ static CGFloat widthCallback(void *ref) {
                 }
             }
             self.selectAttributeItemRange = attributedItem.attributeRange;
+            break;
         }
     }
 }
@@ -693,12 +720,12 @@ static CGFloat widthCallback(void *ref) {
             if (delegate == nil) {
                 continue;
             }
+            
             //若果是字典就是自己设置的图片
             NSDictionary *metaDic = CTRunDelegateGetRefCon(delegate);
             if (![metaDic isKindOfClass:[NSDictionary class]]) {
                 continue;
             }
-            
             
             CGRect runBounds;
             CGFloat ascent;
@@ -724,14 +751,6 @@ static CGFloat widthCallback(void *ref) {
             }
         }
     }
-}
-
-- (UIColor *)randomColor
-{
-    CGFloat hue = ( arc4random() % 256 / 256.0 ); //0.0 to 1.0
-    CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5; // 0.5 to 1.0,away from white
-    CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5; //0.5 to 1.0,away from black
-    return [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:0.3];
 }
 
 -(void)dealloc
